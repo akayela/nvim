@@ -34,6 +34,24 @@ local config = function()
 		},
 	})
 
+  -- go
+  lspconfig.gopls.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  cmd = {"gopls"},
+  filetypes = { "go", "gomod", "gowork", "gotmpl" },
+  root_dir = lspconfig.util.root_pattern("go.work", "go.mod", ".git"),
+  settings = {
+    gopls = {
+      completeUnimported = true,
+      usePlaceholders = true,
+      analyses = {
+        unusedparams = true,
+      },
+    },
+  },
+}
+
 	-- json
 	lspconfig.jsonls.setup({
 		capabilities = capabilities,
@@ -108,6 +126,7 @@ local config = function()
 
 	local luacheck = require("efmls-configs.linters.luacheck")
 	local stylua = require("efmls-configs.formatters.stylua")
+	local goimports = require("efmls-configs.formatters.goimports")
 	local flake8 = require("efmls-configs.linters.flake8")
 	local black = require("efmls-configs.formatters.black")
 	local eslint_d = require("efmls-configs.linters.eslint_d")
@@ -123,6 +142,7 @@ local config = function()
 	lspconfig.efm.setup({
 		filetypes = {
 			"lua",
+      "go",
 			"python",
 			"json",
 			"jsonc",
@@ -148,6 +168,7 @@ local config = function()
 		settings = {
 			languages = {
 				lua = { luacheck, stylua },
+				go = { goimports },
 				python = { flake8, black },
 				typescript = { eslint_d, prettierd },
 				json = { eslint_d, fixjson },
